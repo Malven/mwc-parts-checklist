@@ -195,6 +195,31 @@
         outline-offset: 2px;
       }
 
+      .search-container {
+        margin-bottom: 12px;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        background: rgba(15, 23, 42, 0.8);
+        color: var(--text-main);
+        font-size: 0.85rem;
+        transition: border-color 0.16s ease, background 0.16s ease;
+      }
+
+      .search-input:focus {
+        outline: none;
+        border-color: var(--accent);
+        background: rgba(15, 23, 42, 0.95);
+      }
+
+      .search-input::placeholder {
+        color: var(--text-muted);
+      }
+
       .filter-group {
         display: inline-flex;
         padding: 3px;
@@ -665,6 +690,15 @@
               </button>
             </div>
           </div>
+          <div class="search-container">
+            <input
+              type="text"
+              id="search-input"
+              class="search-input"
+              placeholder="Search parts by name..."
+              aria-label="Search parts by name"
+            />
+          </div>
           <div
             id="categories"
             class="categories"
@@ -1120,8 +1154,28 @@
         return active ? active.dataset.filter : 'all';
       }
 
+      function getSearchQuery() {
+        const searchInput = document.getElementById('search-input');
+        return searchInput ? searchInput.value.trim().toLowerCase() : '';
+      }
+
+      function partNameMatchesSearch(partName, searchQuery) {
+        if (!searchQuery) return true;
+        return partName.toLowerCase().includes(searchQuery);
+      }
+
       function applyFilterToRow(rowEl) {
         const filter = getActiveFilter();
+        const searchQuery = getSearchQuery();
+        const partNameEl = rowEl.querySelector('.part-name');
+        const partName = partNameEl ? partNameEl.textContent : '';
+        const matchesSearch = partNameMatchesSearch(partName, searchQuery);
+
+        if (!matchesSearch) {
+          rowEl.style.display = 'none';
+          return;
+        }
+
         if (filter === 'all') {
           rowEl.style.display = '';
           return;
@@ -1148,6 +1202,13 @@
             applyFilterToAll();
           });
         });
+
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+          searchInput.addEventListener('input', () => {
+            applyFilterToAll();
+          });
+        }
 
         const resetButton = document.getElementById('reset-all');
         if (resetButton) {
