@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Car Parts Checklist</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-elevated: #020617;
+      --card: #020617;
+      --card-border: #1e293b;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --text-main: #e5e7eb;
+      --text-muted: #94a3b8;
+      --have-bg: rgba(34, 197, 94, 0.18);
+      --have-border: #22c55e;
+      --missing-bg: rgba(248, 113, 113, 0.06);
+      --missing-border: rgba(248, 113, 113, 0.4);
+      --badge-have: #22c55e;
+      --badge-missing: #f97316;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 42%, #020617 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 40px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1120px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .title-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .chip {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      max-width: 640px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.5fr);
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .panel {
+      background: linear-gradient(135deg, #020617, #020617);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      box-shadow:
+        0 24px 60px rgba(15, 23, 42, 0.8),
+        0 0 0 1px rgba(15, 23, 42, 0.9);
+      padding: 18px 18px 16px;
+      backdrop-filter: blur(12px);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .panel-header h2 {
+      font-size: 0.95rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .panel-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .filter-group {
+      display: inline-flex;
+      padding: 3px;
+      border-radius: 999px;
+      background: #020617;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      gap: 2px;
+    }
+
+    .filter-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: background 0.16s ease, color 0.16s ease, transform 0.12s ease;
+    }
+
+    .filter-btn.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      transform: translateY(-0.5px);
+    }
+
+    .filter-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .categories {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 70vh;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .category {
+      border-radius: 14px;
+      border: 1px solid rgba(51, 65, 85, 0.8);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.9), #020617);
+      padding: 10px 10px 6px;
+    }
+
+    .category-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .category-header:hover {
+      background: rgba(15, 23, 42, 0.6);
+      border-color: rgba(148, 163, 184, 0.2);
+    }
+
+    .category-title-block {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .category-name {
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .category-count {
+      font-size: 0.72rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .chevron {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      transition: transform 0.16s ease, background 0.16s ease;
+    }
+
+    .category.collapsed .chevron {
+      transform: rotate(-90deg);
+    }
+
+    .parts {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .category.collapsed .parts {
+      display: none;
+    }
+
+    .part-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: rgba(15, 23, 42, 0.8);
+      transition: background 0.14s ease, border-color 0.14s ease, transform 0.08s ease;
+    }
+
+    .part-row.missing {
+      background: var(--missing-bg);
+      border-color: var(--missing-border);
+    }
+
+    .part-row.have {
+      background: var(--have-bg);
+      border-color: var(--have-border);
+    }
+
+    .part-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+      font-size: 0.85rem;
+    }
+
+    .part-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.7);
+      flex-shrink: 0;
+    }
+
+    .part-name {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .status-pill {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.86);
+      margin-right: 4px;
+    }
+
+    .part-row.have .status-pill {
+      border-color: rgba(34, 197, 94, 0.5);
+      color: #bbf7d0;
+      background: rgba(22, 163, 74, 0.2);
+    }
+
+    .part-row.missing .status-pill {
+      border-color: rgba(248, 113, 113, 0.6);
+      color: #fed7aa;
+      background: rgba(248, 113, 113, 0.12);
+    }
+
+    .toggle-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .toggle-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .switch {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      border-radius: 999px;
+      background: #020617;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.16s ease, border-color 0.16s ease;
+    }
+
+    .switch-thumb {
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.6);
+      transition: transform 0.16s ease;
+    }
+
+    .switch[data-state="on"] {
+      background: rgba(34, 197, 94, 0.2);
+      border-color: var(--have-border);
+    }
+
+    .switch[data-state="on"] .switch-thumb {
+      transform: translateX(14px);
+      background: #bbf7d0;
+    }
+
+    .switch:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .summary-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .summary-main {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .summary-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .metric {
+      border-radius: 12px;
+      padding: 8px 10px;
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), #020617);
+      border: 1px solid rgba(51, 65, 85, 0.9);
+    }
+
+    .metric-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+
+    .metric-value {
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+
+    .metric.badge-have {
+      border-color: rgba(34, 197, 94, 0.7);
+    }
+
+    .metric.badge-missing {
+      border-color: rgba(248, 113, 113, 0.6);
+    }
+
+    .lists {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 700px) {
+      .summary-metrics {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .lists {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .list-card {
+      border-radius: 12px;
+      padding: 8px 10px 6px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-height: 200px;
+      overflow: auto;
+    }
+
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .list-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+    }
+
+    .list-count {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--text-muted);
+    }
+
+    .tag-dot-have {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--badge-have);
+    }
+
+    .tag-dot-missing {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--badge-missing);
+    }
+
+    .list-body {
+      font-size: 0.8rem;
+      color: var(--text-main);
+    }
+
+    .list-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 0;
+    }
+
+    .list-bullet {
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.7);
+      flex-shrink: 0;
+    }
+
+    .list-empty {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.35);
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="title-row">
+        <h1>Car Parts Checklist</h1>
+        <span class="chip">Engine · Suspension · Body · Interior · Aftermarket</span>
+      </div>
+      <p>
+        Toggle each part to track whether you already have it. The summary below always reflects
+        which parts you have on hand and which ones are still missing.
+      </p>
+    </header>
+
+    <main class="layout">
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>Parts Inventory</h2>
+            <div class="panel-sub">Grouped by assembly · Click titles to collapse</div>
+          </div>
+          <div class="filter-group" aria-label="Filter visible parts">
+            <button class="filter-btn active" data-filter="all" type="button">All</button>
+            <button class="filter-btn" data-filter="have" type="button">Have</button>
+            <button class="filter-btn" data-filter="missing" type="button">Missing</button>
+          </div>
+        </div>
+        <div id="categories" class="categories" aria-label="Car parts checklist"></div>
+      </section>
+
+      <aside class="panel">
+        <div class="summary-header">
+          <div>
+            <h2>Summary</h2>
+            <div class="panel-sub">Live breakdown of owned vs missing parts</div>
+          </div>
+        </div>
+
+        <section class="summary-main" aria-live="polite">
+          <div class="summary-metrics">
+            <div class="metric">
+              <div class="metric-label">Total Parts</div>
+              <div id="total-count" class="metric-value">0</div>
+            </div>
+            <div class="metric badge-have">
+              <div class="metric-label">Have</div>
+              <div id="have-count" class="metric-value">0</div>
+            </div>
+            <div class="metric badge-missing">
+              <div class="metric-label">Missing</div>
+              <div id="missing-count" class="metric-value">0</div>
+            </div>
+          </div>
+
+          <div class="lists">
+            <div class="list-card">
+              <div class="list-header">
+                <span class="list-title">Parts I Have</span>
+                <span class="tag">
+                  <span class="tag-dot-have"></span>
+                  Have
+                </span>
+              </div>
+              <div id="have-list-count" class="list-count">0 items</div>
+              <div id="have-list" class="list-body">
+                <div class="list-empty">No parts selected yet.</div>
+              </div>
+            </div>
+
+            <div class="list-card">
+              <div class="list-header">
+                <span class="list-title">Parts I Am Missing</span>
+                <span class="tag">
+                  <span class="tag-dot-missing"></span>
+                  Missing
+                </span>
+              </div>
+              <div id="missing-list-count" class="list-count">0 items</div>
+              <div id="missing-list" class="list-body">
+                <div class="list-empty">All parts are currently marked as missing.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    // Data model: categories and parts
+    const PART_CATEGORIES = [
+      {
+        name: "ENGINE ASSEMBLY",
+        parts: [
+          "Air filter",
+          "Alternator",
+          "Aux Shaft",
+          "Aux Sprocket",
+          "Block",
+          "Brake Cylinder",
+          "Camshaft",
+          "Camshaft Sprocket",
+          "Carburetor",
+          "Clutch Cover Plate",
+          "Clutch Disk",
+          "Crankshaft",
+          "Crankshaft Pulley",
+          "Cylinder Head",
+          "Distributor",
+          "Exhaust Manifold",
+          "Fan",
+          "Fan Belt",
+          "Flywheel",
+          "Fuel Pump",
+          "Gearbox",
+          "Headgasket",
+          "Intake Manifold",
+          "Main Bearings",
+          "Oilpan",
+          "Pistons",
+          "Pressure Plate",
+          "Rear Plate",
+          "Rocker Arm",
+          "Rocker Cover",
+          "Starter",
+          "Thermostat Housing",
+          "Timing Belt",
+          "Timing belt Cover",
+          "Vacuum Line",
+          "Water Pump",
+          "Water Pump Pulley"
+        ]
+      },
+      {
+        name: "AUXILLARY ASSEMBLY",
+        parts: [
+          "Battery",
+          "Brake Lining",
+          "Brake Master Cylinder",
+          "Blower Hose",
+          "Clutch Cable",
+          "Exhaust Pipe Front",
+          "Exhaust Pipe Rear",
+          "Fuel Tank",
+          "Handbrake Cable",
+          "Heater Box",
+          "Heater Hose Inlet",
+          "Heater Hose Outlet",
+          "Ignition Coil",
+          "Oil Pump",
+          "Thermostat",
+          "Power Brake Cylinder",
+          "Radiator",
+          "Radiator Hose Bottom",
+          "Radiator Hose Top",
+          "Steering Column",
+          "Steering Rack",
+          "Steering Shaft"
+        ]
+      },
+      {
+        name: "SUSPENSION ASSEMBLY",
+        parts: [
+          "Brake Assembly Right",
+          "Brake Assembly Left",
+          "Coil Spring",
+          "Driveshaft",
+          "Front Link Left",
+          "Front Link Right",
+          "Front Lower Control Arm",
+          "Front Upper Control Arm",
+          "Rear Axle",
+          "Rear Lower Control Arm",
+          "Rear Upper Control Arm",
+          "Shock Absorber Front",
+          "Shock Absorber Rear",
+          "Wheels"
+        ]
+      },
+      {
+        name: "BODY ASSEMBLY",
+        parts: [
+          "Bootlid",
+          "Bumper Front",
+          "Bumper Rear",
+          "Door Left",
+          "Door Right",
+          "Fender Left",
+          "Fender Right",
+          "Grille",
+          "Headlight Left",
+          "Headlight Right",
+          "Hood",
+          "Hubcaps",
+          "Rear Light Left",
+          "Rear Light Right"
+        ]
+      },
+      {
+        name: "INTERIOR ASSEMBLY",
+        parts: [
+          "Column Shroud Left",
+          "Column Shroud Right",
+          "Dashboard",
+          "Dashboard Bottom Cover",
+          "Dashboard Top Cover",
+          "Fresh Air Duct",
+          "Gear Lever",
+          "Handbrake Lever",
+          "Instrument Panel",
+          "Manual/Automatic Pedal Box",
+          "Parcel Shelf",
+          "Radio",
+          "Rear Seat Backrest",
+          "Rear Seat Bench",
+          "Seat Driver",
+          "Seat Passenger",
+          "Steering Wheel",
+          "Ventilation Box"
+        ]
+      },
+      {
+        name: "AFTERMARKET PARTS",
+        parts: [
+          "Ampere Gauge",
+          "Extra Gauges",
+          "Long Coil Springs",
+          "Nitrous",
+          "Rally Mudflaps",
+          "Rear Spoiler",
+          "Short Coil Springs",
+          "Skid Plate",
+          "Twin Carburators"
+        ]
+      }
+    ];
+
+    // State: map partId -> boolean (true = have, false = missing)
+    const partState = {};
+    const PART_ID_PREFIX = "part-";
+    const STORAGE_KEY = "carPartsChecklistState.v1";
+
+    function createPartId(categoryName, partName) {
+      return (
+        PART_ID_PREFIX +
+        categoryName.replace(/\s+/g, "_") +
+        "-" +
+        partName.replace(/[^\w]+/g, "_")
+      ).toLowerCase();
+    }
+
+    function loadStateFromStorage() {
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object") return;
+        Object.keys(parsed).forEach((id) => {
+          partState[id] = Boolean(parsed[id]);
+        });
+      } catch (error) {
+        // If anything goes wrong (including file:// quirks), just ignore and start fresh
+        console.warn("Could not load saved car parts state", error);
+      }
+    }
+
+    function saveStateToStorage() {
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(partState));
+      } catch (error) {
+        // Non-fatal; the UI still works even if persistence fails
+        console.warn("Could not save car parts state", error);
+      }
+    }
+
+    function renderCategories() {
+      const container = document.getElementById("categories");
+      container.innerHTML = "";
+
+      PART_CATEGORIES.forEach((category) => {
+        const categoryEl = document.createElement("section");
+        categoryEl.className = "category";
+
+        const header = document.createElement("button");
+        header.type = "button";
+        header.className = "category-header";
+        header.setAttribute("aria-expanded", "true");
+
+        const titleBlock = document.createElement("div");
+        titleBlock.className = "category-title-block";
+
+        const nameEl = document.createElement("div");
+        nameEl.className = "category-name";
+        nameEl.textContent = category.name;
+
+        const countEl = document.createElement("div");
+        countEl.className = "category-count";
+        countEl.textContent = `${category.parts.length} parts`;
+
+        titleBlock.appendChild(nameEl);
+        titleBlock.appendChild(countEl);
+
+        const chevron = document.createElement("div");
+        chevron.className = "chevron";
+        chevron.textContent = "▾";
+
+        header.appendChild(titleBlock);
+        header.appendChild(chevron);
+
+        const partsList = document.createElement("div");
+        partsList.className = "parts";
+
+        category.parts.forEach((partName) => {
+          const partId = createPartId(category.name, partName);
+          if (!(partId in partState)) {
+            partState[partId] = false; // default missing
+          }
+
+          const row = document.createElement("div");
+          row.className = "part-row missing";
+          row.dataset.partId = partId;
+
+          const label = document.createElement("div");
+          label.className = "part-label";
+
+          const dot = document.createElement("div");
+          dot.className = "part-dot";
+
+          const nameSpan = document.createElement("div");
+          nameSpan.className = "part-name";
+          nameSpan.textContent = partName;
+
+          const statusPill = document.createElement("span");
+          statusPill.className = "status-pill";
+          statusPill.textContent = "Missing";
+
+          label.appendChild(dot);
+          label.appendChild(nameSpan);
+
+          const toggleWrapper = document.createElement("div");
+          toggleWrapper.className = "toggle-wrapper";
+
+          const toggleLabel = document.createElement("span");
+          toggleLabel.className = "toggle-label";
+          toggleLabel.textContent = "Have";
+
+          const switchBtn = document.createElement("button");
+          switchBtn.type = "button";
+          switchBtn.className = "switch";
+          switchBtn.setAttribute("role", "switch");
+          switchBtn.setAttribute("aria-checked", "false");
+          switchBtn.dataset.state = "off";
+          switchBtn.dataset.partId = partId;
+          switchBtn.setAttribute("aria-label", `Mark "${partName}" as have or missing`);
+
+          const thumb = document.createElement("div");
+          thumb.className = "switch-thumb";
+          switchBtn.appendChild(thumb);
+
+          switchBtn.addEventListener("click", () => {
+            const newState = !partState[partId];
+            setPartState(partId, partName, row, switchBtn, statusPill, newState);
+          });
+
+          switchBtn.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              switchBtn.click();
+            }
+          });
+
+          toggleWrapper.appendChild(toggleLabel);
+          toggleWrapper.appendChild(switchBtn);
+
+          row.appendChild(label);
+          row.appendChild(statusPill);
+          row.appendChild(toggleWrapper);
+
+          // Apply any saved state so the UI reflects previously toggled values
+          if (partState[partId]) {
+            row.classList.remove("missing");
+            row.classList.add("have");
+            switchBtn.dataset.state = "on";
+            switchBtn.setAttribute("aria-checked", "true");
+            statusPill.textContent = "Have";
+          }
+
+          partsList.appendChild(row);
+        });
+
+        header.addEventListener("click", () => {
+          const isCollapsed = categoryEl.classList.toggle("collapsed");
+          header.setAttribute("aria-expanded", String(!isCollapsed));
+        });
+
+        categoryEl.appendChild(header);
+        categoryEl.appendChild(partsList);
+        container.appendChild(categoryEl);
+      });
+    }
+
+    function setPartState(partId, partName, rowEl, switchEl, statusPillEl, have) {
+      partState[partId] = have;
+
+      if (have) {
+        rowEl.classList.remove("missing");
+        rowEl.classList.add("have");
+        switchEl.dataset.state = "on";
+        switchEl.setAttribute("aria-checked", "true");
+        statusPillEl.textContent = "Have";
+      } else {
+        rowEl.classList.remove("have");
+        rowEl.classList.add("missing");
+        switchEl.dataset.state = "off";
+        switchEl.setAttribute("aria-checked", "false");
+        statusPillEl.textContent = "Missing";
+      }
+
+      applyFilterToRow(rowEl);
+      updateSummary();
+      saveStateToStorage();
+    }
+
+    function getActiveFilter() {
+      const active = document.querySelector(".filter-btn.active");
+      return active ? active.dataset.filter : "all";
+    }
+
+    function applyFilterToRow(rowEl) {
+      const filter = getActiveFilter();
+      if (filter === "all") {
+        rowEl.style.display = "";
+        return;
+      }
+      const isHave = rowEl.classList.contains("have");
+      if (filter === "have") {
+        rowEl.style.display = isHave ? "" : "none";
+      } else if (filter === "missing") {
+        rowEl.style.display = !isHave ? "" : "none";
+      }
+    }
+
+    function applyFilterToAll() {
+      const rows = document.querySelectorAll(".part-row");
+      rows.forEach((row) => applyFilterToRow(row));
+    }
+
+    function setupFilters() {
+      const buttons = document.querySelectorAll(".filter-btn");
+      buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          buttons.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          applyFilterToAll();
+        });
+      });
+    }
+
+    function updateSummary() {
+      const allIds = Object.keys(partState);
+      const total = allIds.length;
+      const haveIds = allIds.filter((id) => partState[id]);
+      const missingIds = allIds.filter((id) => !partState[id]);
+
+      const totalCountEl = document.getElementById("total-count");
+      const haveCountEl = document.getElementById("have-count");
+      const missingCountEl = document.getElementById("missing-count");
+
+      totalCountEl.textContent = String(total);
+      haveCountEl.textContent = String(haveIds.length);
+      missingCountEl.textContent = String(missingIds.length);
+
+      const haveListEl = document.getElementById("have-list");
+      const missingListEl = document.getElementById("missing-list");
+      const haveListCountEl = document.getElementById("have-list-count");
+      const missingListCountEl = document.getElementById("missing-list-count");
+
+      haveListEl.innerHTML = "";
+      missingListEl.innerHTML = "";
+
+      if (haveIds.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "list-empty";
+        empty.textContent = "No parts selected yet.";
+        haveListEl.appendChild(empty);
+      } else {
+        haveIds
+          .map((id) => findPartDisplayNameById(id))
+          .sort((a, b) => a.localeCompare(b))
+          .forEach((name) => {
+            const item = document.createElement("div");
+            item.className = "list-item";
+            const bullet = document.createElement("div");
+            bullet.className = "list-bullet";
+            const text = document.createElement("div");
+            text.textContent = name;
+            item.appendChild(bullet);
+            item.appendChild(text);
+            haveListEl.appendChild(item);
+          });
+      }
+
+      if (missingIds.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "list-empty";
+        empty.textContent = "No parts are missing. Nice work.";
+        missingListEl.appendChild(empty);
+      } else {
+        missingIds
+          .map((id) => findPartDisplayNameById(id))
+          .sort((a, b) => a.localeCompare(b))
+          .forEach((name) => {
+            const item = document.createElement("div");
+            item.className = "list-item";
+            const bullet = document.createElement("div");
+            bullet.className = "list-bullet";
+            const text = document.createElement("div");
+            text.textContent = name;
+            item.appendChild(bullet);
+            item.appendChild(text);
+            missingListEl.appendChild(item);
+          });
+      }
+
+      haveListCountEl.textContent =
+        haveIds.length === 1 ? "1 item" : `${haveIds.length} items`;
+      missingListCountEl.textContent =
+        missingIds.length === 1 ? "1 item" : `${missingIds.length} items`;
+    }
+
+    function findPartDisplayNameById(partId) {
+      for (const category of PART_CATEGORIES) {
+        for (const partName of category.parts) {
+          const candidateId = createPartId(category.name, partName);
+          if (candidateId === partId) {
+            return partName;
+          }
+        }
+      }
+      return partId;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadStateFromStorage();
+      renderCategories();
+      setupFilters();
+      applyFilterToAll();
+      updateSummary();
+    });
+  </script>
+</body>
+</html>
+
+
