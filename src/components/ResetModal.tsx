@@ -1,5 +1,5 @@
+import { Modal, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { Modal, Button, Space, Typography } from 'antd';
 
 const { Text } = Typography;
 
@@ -40,7 +40,7 @@ export function ResetModal({ isOpen, onClose, onConfirm }: ResetModalProps) {
       }}
       width={420}
       styles={{
-        content: {
+        body: {
           borderRadius: 18,
         },
       }}
