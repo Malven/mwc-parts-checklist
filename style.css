@@ -157,6 +157,116 @@ header p {
   outline-offset: 2px;
 }
 
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.modal-hidden {
+  display: none;
+}
+
+.modal-dialog {
+  background: linear-gradient(135deg, #020617, #020617);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  padding: 24px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 12px;
+  letter-spacing: 0.02em;
+}
+
+.modal-message {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.modal-btn {
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease,
+    transform 0.08s ease;
+  border: 1px solid;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.modal-btn-cancel {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(148, 163, 184, 0.4);
+  color: var(--text-main);
+}
+
+.modal-btn-cancel:hover {
+  background: rgba(15, 23, 42, 0.95);
+  border-color: rgba(148, 163, 184, 0.6);
+  transform: translateY(-1px);
+}
+
+.modal-btn-cancel:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.modal-btn-confirm {
+  background: rgba(127, 29, 29, 0.4);
+  border-color: rgba(248, 113, 113, 0.6);
+  color: #fecaca;
+}
+
+.modal-btn-confirm:hover {
+  background: rgba(127, 29, 29, 0.6);
+  border-color: rgba(248, 113, 113, 0.9);
+  transform: translateY(-1px);
+}
+
+.modal-btn-confirm:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .search-container {
   margin-bottom: 12px;
 }
@@ -330,6 +440,11 @@ header p {
   border-color: var(--have-border);
 }
 
+.part-row.partial {
+  background: rgba(251, 191, 36, 0.12);
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
 .part-label {
   display: flex;
   align-items: center;
@@ -337,6 +452,7 @@ header p {
   flex: 1;
   min-width: 0;
   font-size: 0.85rem;
+  flex-wrap: wrap;
 }
 
 .part-dot {
@@ -351,6 +467,40 @@ header p {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.buy-badge {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.buy-badge[data-location='fleetari'] {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.5);
+}
+
+.buy-badge[data-location='psk'] {
+  background: rgba(168, 85, 247, 0.2);
+  color: #c4b5fd;
+  border: 1px solid rgba(168, 85, 247, 0.5);
+}
+
+.fastener-info {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: 'Courier New', monospace;
 }
 
 .status-pill {
@@ -377,10 +527,68 @@ header p {
   background: rgba(248, 113, 113, 0.12);
 }
 
+.controls-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
 .toggle-wrapper {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.counter-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.counter-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  background: rgba(15, 23, 42, 0.8);
+  color: var(--text-main);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.16s ease, border-color 0.16s ease, transform 0.08s ease;
+  flex-shrink: 0;
+}
+
+.counter-btn:hover:not(:disabled) {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: var(--accent);
+  transform: scale(1.05);
+}
+
+.counter-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.counter-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.counter-display {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-main);
+  min-width: 40px;
+  text-align: center;
+  font-family: 'Courier New', monospace;
 }
 
 .toggle-label {
