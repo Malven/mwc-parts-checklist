@@ -1,9 +1,12 @@
+import { Card, Space, Typography } from 'antd';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createPartId, PART_CATEGORIES } from '../../data/parts';
 import { SummaryPart } from '../../types';
 import { Metrics } from './Metrics';
 import { PartsList } from './PartsList';
+
+const { Text } = Typography;
 
 interface SummaryProps {
   partStates: Record<string, number>;
@@ -55,29 +58,55 @@ export function Summary({ partStates }: SummaryProps) {
   }, [partStates]);
 
   return (
-    <aside className="bg-[linear-gradient(135deg,#020617,#020617)] rounded-[18px] border border-[rgba(148,163,184,0.15)] shadow-[0_24px_60px_rgba(15,23,42,0.8),0_0_0_1px_rgba(15,23,42,0.9)] p-[18px_18px_16px] backdrop-blur-md">
-      <div className="flex justify-between items-center gap-2.5 mb-3">
+    <Card
+      style={{
+        borderRadius: 18,
+        borderColor: 'rgba(148,163,184,0.15)',
+        boxShadow:
+          '0 24px 60px rgba(15,23,42,0.8), 0 0 0 1px rgba(15,23,42,0.9)',
+        backdropFilter: 'blur(12px)',
+      }}
+      styles={{ body: { padding: '18px 18px 16px' } }}
+    >
+      <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
         <div>
-          <h2 className="text-[0.95rem] tracking-[0.16em] uppercase text-(--text-muted)">
+          <Text
+            style={{
+              fontSize: '0.95rem',
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              color: '#94a3b8',
+              display: 'block',
+            }}
+          >
             {t('summary.title')}
-          </h2>
-          <div className="text-[0.8rem] text-(--text-muted)">
+          </Text>
+          <Text
+            type="secondary"
+            style={{
+              fontSize: '0.8rem',
+              display: 'block',
+            }}
+          >
             {t('summary.subtitle')}
-          </div>
+          </Text>
         </div>
-      </div>
 
-      <section className="flex flex-col gap-2" aria-live="polite">
-        <Metrics
-          totalNeeded={summaryData.totalNeeded}
-          totalHave={summaryData.totalHave}
-          totalMissing={summaryData.totalMissing}
-        />
-        <PartsList
-          haveParts={summaryData.haveParts}
-          missingParts={summaryData.missingParts}
-        />
-      </section>
-    </aside>
+        <section
+          style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+          aria-live="polite"
+        >
+          <Metrics
+            totalNeeded={summaryData.totalNeeded}
+            totalHave={summaryData.totalHave}
+            totalMissing={summaryData.totalMissing}
+          />
+          <PartsList
+            haveParts={summaryData.haveParts}
+            missingParts={summaryData.missingParts}
+          />
+        </section>
+      </Space>
+    </Card>
   );
 }

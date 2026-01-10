@@ -1,5 +1,31 @@
+import { Badge, Card, Col, Row, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { SummaryPart } from '../../types';
+
+const { Text } = Typography;
+
+interface PartItemProps {
+  content: string;
+}
+
+function PartItem({ content }: PartItemProps) {
+  return (
+    <div style={{ padding: '2px 0' }}>
+      <Space size="small">
+        <div
+          style={{
+            width: 4,
+            height: 4,
+            borderRadius: '50%',
+            backgroundColor: 'rgba(148, 163, 184, 0.7)',
+            flexShrink: 0,
+          }}
+        />
+        <Text style={{ fontSize: '14px' }}>{content}</Text>
+      </Space>
+    </div>
+  );
+}
 
 interface PartsListProps {
   haveParts: SummaryPart[];
@@ -9,81 +35,144 @@ interface PartsListProps {
 export function PartsList({ haveParts, missingParts }: PartsListProps) {
   const { t } = useTranslation();
 
-  return (
-    <div className="grid grid-cols-2 gap-2.5 mt-2.5 max-[700px]:grid-cols-1">
-      <div className="rounded-xl py-2 px-2.5 pb-1.5 bg-[rgba(15,23,42,0.9)] border border-slate-700/90 flex flex-col gap-1">
-        <div className="flex justify-between items-center gap-1.5">
-          <span className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.16em] text-(--text-muted) whitespace-nowrap">
-            <span className="w-1.5 h-1.5 rounded-full bg-(--badge-have) shrink-0"></span>
-            {t('partsList.haveTitle')}
-          </span>
-        </div>
-        <div className="text-xs text-(--text-muted)">
-          {haveParts.length === 1
-            ? `1 ${t('partsList.item')}`
-            : `${haveParts.length} ${t('partsList.items')}`}
-        </div>
-        <div className="text-sm text-(--text-main) max-h-42.5 overflow-y-auto overflow-x-hidden pr-0.5 scrollbar-custom">
-          {haveParts.length === 0 ? (
-            <div className="text-[0.78rem] text-(--text-muted) italic">
-              {t('partsList.noPartsSelected')}
-            </div>
-          ) : (
-            haveParts
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map((part, index) => (
-                <div
-                  key={`have-${part.name}-${index}`}
-                  className="flex items-center gap-1.5 py-0.5"
-                >
-                  <div className="w-1 h-1 rounded-full bg-slate-400/70 shrink-0"></div>
-                  <div>
-                    {part.needed > 1
-                      ? `${part.name} (${part.have}/${part.needed})`
-                      : part.name}
-                  </div>
-                </div>
-              ))
-          )}
-        </div>
-      </div>
+  const haveListItems = haveParts
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((part, index) => ({
+      key: `have-${part.name}-${index}`,
+      content:
+        part.needed > 1
+          ? `${part.name} (${part.have}/${part.needed})`
+          : part.name,
+    }));
 
-      <div className="rounded-xl py-2 px-2.5 pb-1.5 bg-[rgba(15,23,42,0.9)] border border-slate-700/90 flex flex-col gap-1">
-        <div className="flex justify-between items-center gap-1.5">
-          <span className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.16em] text-(--text-muted) whitespace-nowrap">
-            <span className="w-1.5 h-1.5 rounded-full bg-(--badge-missing) shrink-0"></span>
-            {t('partsList.missingTitle')}
-          </span>
-        </div>
-        <div className="text-xs text-(--text-muted)">
-          {missingParts.length === 1
-            ? `1 ${t('partsList.item')}`
-            : `${missingParts.length} ${t('partsList.items')}`}
-        </div>
-        <div className="text-sm text-(--text-main) max-h-42.5 overflow-y-auto overflow-x-hidden pr-0.5 scrollbar-custom">
-          {missingParts.length === 0 ? (
-            <div className="text-[0.78rem] text-(--text-muted) italic">
-              {t('partsList.noPartsMissing')}
-            </div>
-          ) : (
-            missingParts
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map((part, index) => (
-                <div
-                  key={`missing-${part.name}-${index}`}
-                  className="flex items-center gap-1.5 py-0.5"
+  const missingListItems = missingParts
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((part, index) => ({
+      key: `missing-${part.name}-${index}`,
+      content: part.needed > 1 ? `${part.name} (0/${part.needed})` : part.name,
+    }));
+
+  return (
+    <Row gutter={10} style={{ marginTop: 10 }}>
+      <Col xs={24} sm={12}>
+        <Card
+          size="small"
+          style={{
+            borderRadius: 12,
+            backgroundColor: 'rgba(15,23,42,0.9)',
+            borderColor: 'rgba(148, 163, 184, 0.9)',
+          }}
+          styles={{ body: { padding: '8px 10px 6px' } }}
+        >
+          <Space orientation="vertical" size="small" style={{ width: '100%' }}>
+            <Space>
+              <Badge color="#22c55e" />
+              <Text
+                type="secondary"
+                style={{
+                  fontSize: '12px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.16em',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {t('partsList.haveTitle')}
+              </Text>
+            </Space>
+            <Text type="secondary" style={{ fontSize: '12px' }}>
+              {haveParts.length === 1
+                ? `1 ${t('partsList.item')}`
+                : `${haveParts.length} ${t('partsList.items')}`}
+            </Text>
+            <div
+              style={{
+                fontSize: '14px',
+                maxHeight: '170px',
+                overflowY: 'auto',
+                overflowX: 'hidden',
+                paddingRight: 2,
+              }}
+              className="scrollbar-custom"
+            >
+              {haveParts.length === 0 ? (
+                <Text
+                  type="secondary"
+                  italic
+                  style={{ fontSize: '12px', display: 'block' }}
                 >
-                  <div className="w-1 h-1 rounded-full bg-slate-400/70 shrink-0"></div>
-                  <div>
-                    {part.needed > 1
-                      ? `${part.name} (0/${part.needed})`
-                      : part.name}
-                  </div>
+                  {t('partsList.noPartsSelected')}
+                </Text>
+              ) : (
+                <div>
+                  {haveListItems.map(item => (
+                    <PartItem key={item.key} content={item.content} />
+                  ))}
                 </div>
-              ))
-          )}
-        </div>
-      </div>
-    </div>
+              )}
+            </div>
+          </Space>
+        </Card>
+      </Col>
+
+      <Col xs={24} sm={12}>
+        <Card
+          size="small"
+          style={{
+            borderRadius: 12,
+            backgroundColor: 'rgba(15,23,42,0.9)',
+            borderColor: 'rgba(148, 163, 184, 0.9)',
+          }}
+          styles={{ body: { padding: '8px 10px 6px' } }}
+        >
+          <Space orientation="vertical" size="small" style={{ width: '100%' }}>
+            <Space>
+              <Badge color="#f97316" />
+              <Text
+                type="secondary"
+                style={{
+                  fontSize: '12px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.16em',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {t('partsList.missingTitle')}
+              </Text>
+            </Space>
+            <Text type="secondary" style={{ fontSize: '12px' }}>
+              {missingParts.length === 1
+                ? `1 ${t('partsList.item')}`
+                : `${missingParts.length} ${t('partsList.items')}`}
+            </Text>
+            <div
+              style={{
+                fontSize: '14px',
+                maxHeight: '170px',
+                overflowY: 'auto',
+                overflowX: 'hidden',
+                paddingRight: 2,
+              }}
+              className="scrollbar-custom"
+            >
+              {missingParts.length === 0 ? (
+                <Text
+                  type="secondary"
+                  italic
+                  style={{ fontSize: '12px', display: 'block' }}
+                >
+                  {t('partsList.noPartsMissing')}
+                </Text>
+              ) : (
+                <div>
+                  {missingListItems.map(item => (
+                    <PartItem key={item.key} content={item.content} />
+                  ))}
+                </div>
+              )}
+            </div>
+          </Space>
+        </Card>
+      </Col>
+    </Row>
   );
 }

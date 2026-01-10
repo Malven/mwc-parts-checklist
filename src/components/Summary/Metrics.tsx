@@ -1,4 +1,7 @@
 import { useTranslation } from 'react-i18next';
+import { Row, Col, Card, Typography } from 'antd';
+
+const { Text } = Typography;
 
 interface MetricsProps {
   totalNeeded: number;
@@ -14,19 +17,112 @@ export function Metrics({
   const { t } = useTranslation();
 
   return (
-    <div className="grid grid-cols-3 gap-2 max-[700px]:grid-cols-3">
-      <div className="rounded-xl py-2 px-2.5 bg-[radial-gradient(circle_at_top,rgba(15,23,42,0.9),#020617)] border border-slate-700/90">
-        <div className="text-[0.7rem] uppercase tracking-[0.16em] text-(--text-muted) mb-[3px]">{t('metrics.totalParts')}</div>
-        <div className="text-[1.15rem] font-semibold">{totalNeeded}</div>
-      </div>
-      <div className="rounded-xl py-2 px-[10px] bg-[radial-gradient(circle_at_top,rgba(15,23,42,0.9),#020617)] border border-green-500/70">
-        <div className="text-[0.7rem] uppercase tracking-[0.16em] text-(--text-muted) mb-[3px]">{t('metrics.have')}</div>
-        <div className="text-[1.15rem] font-semibold">{totalHave}</div>
-      </div>
-      <div className="rounded-xl py-2 px-[10px] bg-[radial-gradient(circle_at_top,rgba(15,23,42,0.9),#020617)] border border-red-400/60">
-        <div className="text-[0.7rem] uppercase tracking-[0.16em] text-(--text-muted) mb-[3px]">{t('metrics.missing')}</div>
-        <div className="text-[1.15rem] font-semibold">{totalMissing}</div>
-      </div>
-    </div>
+    <Row gutter={8}>
+      <Col xs={8} sm={8}>
+        <Card
+          size="small"
+          style={{
+            borderRadius: 12,
+            background:
+              'radial-gradient(circle at top, rgba(15,23,42,0.9), #020617)',
+            borderColor: 'rgba(148, 163, 184, 0.9)',
+            padding: '8px 10px',
+          }}
+          styles={{ body: { padding: '8px 10px' } }}
+        >
+          <Text
+            type="secondary"
+            style={{
+              fontSize: '11px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.16em',
+              display: 'block',
+              marginBottom: 3,
+            }}
+          >
+            {t('metrics.totalParts')}
+          </Text>
+          <Text
+            style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              display: 'block',
+            }}
+          >
+            {totalNeeded}
+          </Text>
+        </Card>
+      </Col>
+      <Col xs={8} sm={8}>
+        <Card
+          size="small"
+          style={{
+            borderRadius: 12,
+            background:
+              'radial-gradient(circle at top, rgba(15,23,42,0.9), #020617)',
+            borderColor: 'rgba(34, 197, 94, 0.7)',
+            padding: '8px 10px',
+          }}
+          styles={{ body: { padding: '8px 10px' } }}
+        >
+          <Text
+            type="secondary"
+            style={{
+              fontSize: '11px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.16em',
+              display: 'block',
+              marginBottom: 3,
+            }}
+          >
+            {t('metrics.have')}
+          </Text>
+          <Text
+            style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              display: 'block',
+            }}
+          >
+            {totalHave}
+          </Text>
+        </Card>
+      </Col>
+      <Col xs={8} sm={8}>
+        <Card
+          size="small"
+          style={{
+            borderRadius: 12,
+            background:
+              'radial-gradient(circle at top, rgba(15,23,42,0.9), #020617)',
+            borderColor: 'rgba(248, 113, 113, 0.6)',
+            padding: '8px 10px',
+          }}
+          styles={{ body: { padding: '8px 10px' } }}
+        >
+          <Text
+            type="secondary"
+            style={{
+              fontSize: '11px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.16em',
+              display: 'block',
+              marginBottom: 3,
+            }}
+          >
+            {t('metrics.missing')}
+          </Text>
+          <Text
+            style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              display: 'block',
+            }}
+          >
+            {totalMissing}
+          </Text>
+        </Card>
+      </Col>
+    </Row>
   );
 }

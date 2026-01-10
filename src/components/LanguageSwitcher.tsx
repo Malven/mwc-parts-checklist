@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Dropdown, Button, Space } from 'antd';
+import type { MenuProps } from 'antd';
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -9,70 +10,57 @@ const languages = [
 
 export function LanguageSwitcher() {
   const { i18n, t } = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
+  const currentLanguage =
+    languages.find(lang => lang.code === i18n.language) || languages[0];
 
   const handleLanguageChange = (langCode: string) => {
     i18n.changeLanguage(langCode);
-    setIsOpen(false);
   };
 
-  return (
-    <div className="relative" ref={dropdownRef}>
-      <button
-        type="button"
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-400/30 bg-[rgba(15,23,42,0.8)] text-(--text-main) text-sm transition-all duration-150 hover:bg-[rgba(15,23,42,0.95)] hover:border-slate-400/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-(--accent) focus-visible:outline-offset-2"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label={t('languageSwitcher.ariaLabel')}
-        aria-expanded={isOpen}
-        aria-haspopup="true"
-      >
-        <span className="text-lg">{currentLanguage.flag}</span>
-        <span className="uppercase tracking-[0.05em]">{currentLanguage.code}</span>
-        <span className={`text-[0.7rem] transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`}>▾</span>
-      </button>
+  const menuItems: MenuProps['items'] = languages.map(lang => ({
+    key: lang.code,
+    label: (
+      <Space>
+        <span style={{ fontSize: '18px' }}>{lang.flag}</span>
+        <span style={{ flex: 1 }}>{lang.name}</span>
+        {i18n.language === lang.code && (
+          <span style={{ color: '#38bdf8' }}>✓</span>
+        )}
+      </Space>
+    ),
+    onClick: () => handleLanguageChange(lang.code),
+    style: {
+      backgroundColor:
+        i18n.language === lang.code ? 'rgba(56,189,248,0.2)' : 'transparent',
+      color: i18n.language === lang.code ? '#38bdf8' : undefined,
+    },
+  }));
 
-      {isOpen && (
-        <div className="absolute right-0 top-full mt-1 bg-[linear-gradient(135deg,#020617,#020617)] border border-[rgba(148,163,184,0.15)] rounded-lg shadow-lg overflow-hidden z-50 min-w-[140px]">
-          {languages.map(lang => (
-            <button
-              key={lang.code}
-              type="button"
-              className={`w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors duration-150 ${
-                i18n.language === lang.code
-                  ? 'bg-[rgba(56,189,248,0.2)] text-(--accent)'
-                  : 'text-(--text-main) hover:bg-[rgba(15,23,42,0.8)]'
-              }`}
-              onClick={() => handleLanguageChange(lang.code)}
-            >
-              <span className="text-lg">{lang.flag}</span>
-              <span className="flex-1 text-left">{lang.name}</span>
-              {i18n.language === lang.code && (
-                <span className="text-(--accent)">✓</span>
-              )}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
+  return (
+    <Dropdown
+      menu={{ items: menuItems }}
+      trigger={['click']}
+      placement="bottomRight"
+    >
+      <Button
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          padding: '6px 12px',
+          height: 'auto',
+          borderColor: 'rgba(148, 163, 184, 0.3)',
+          backgroundColor: 'rgba(15,23,42,0.8)',
+        }}
+        aria-label={t('languageSwitcher.ariaLabel')}
+      >
+        <span style={{ fontSize: '18px' }}>{currentLanguage.flag}</span>
+        <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          {currentLanguage.code}
+        </span>
+        <span style={{ fontSize: '11px' }}>▾</span>
+      </Button>
+    </Dropdown>
   );
 }
-

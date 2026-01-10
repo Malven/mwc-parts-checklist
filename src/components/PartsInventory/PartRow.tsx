@@ -1,7 +1,10 @@
+import { Button, Space, Switch, Tag, Typography } from 'antd';
 import { type KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Part } from '../../types';
 import { createPartId } from '../../data/parts';
+import { Part } from '../../types';
+
+const { Text } = Typography;
 
 interface PartRowProps {
   part: Part;
@@ -49,17 +52,43 @@ export function PartRow({
   const isHave = effectiveQty === partQty;
   const isPartial = !isMissing && !isHave;
 
+  const getRowStyle = () => {
+    if (isMissing) {
+      return {
+        backgroundColor: 'rgba(248, 113, 113, 0.06)',
+        borderColor: 'rgba(248, 113, 113, 0.4)',
+      };
+    } else if (isHave) {
+      return {
+        backgroundColor: 'rgba(34, 197, 94, 0.18)',
+        borderColor: '#22c55e',
+      };
+    } else if (isPartial) {
+      return {
+        backgroundColor: 'rgba(251, 191, 36, 0.12)',
+        borderColor: 'rgba(251, 191, 36, 0.4)',
+      };
+    }
+    return {
+      backgroundColor: 'rgba(15,23,42,0.8)',
+      borderColor: 'transparent',
+    };
+  };
+
   return (
     <div
-      className={`flex items-center justify-between gap-2 py-1.5 px-2 rounded-full border transition-all duration-140 cursor-pointer hover:translate-x-0.5 ${
-        isMissing
-          ? 'bg-(--missing-bg) border-(--missing-border)'
-          : isHave
-            ? 'bg-(--have-bg) border-(--have-border)'
-            : isPartial
-              ? 'bg-[rgba(251,191,36,0.12)] border-[rgba(251,191,36,0.4)]'
-              : 'bg-[rgba(15,23,42,0.8)] border-transparent'
-      }`}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 8,
+        padding: '6px 8px',
+        borderRadius: '8px',
+        border: '1px solid',
+        cursor: partQty === 1 ? 'pointer' : 'default',
+        transition: 'all 0.14s',
+        ...getRowStyle(),
+      }}
       data-part-id={partId}
       data-part-qty={partQty}
       tabIndex={partQty === 1 ? 0 : undefined}
@@ -72,33 +101,109 @@ export function PartRow({
       onClick={partQty === 1 ? handleRowClick : undefined}
       onKeyDown={partQty === 1 ? handleKeyDown : undefined}
     >
-      <div className="flex items-center gap-2 flex-1 min-w-0 text-sm flex-wrap">
-        <div className="w-[7px] h-[7px] rounded-full bg-slate-400/70 shrink-0"></div>
-        <div className="whitespace-nowrap text-ellipsis overflow-hidden">{part.name}</div>
+      <Space size="small" wrap style={{ flex: 1, minWidth: 0 }}>
+        <div
+          style={{
+            width: 7,
+            height: 7,
+            borderRadius: '50%',
+            backgroundColor: 'rgba(148, 163, 184, 0.7)',
+            flexShrink: 0,
+          }}
+        />
+        <Text
+          style={{
+            fontSize: '14px',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+          }}
+        >
+          {part.name}
+        </Text>
         {part.buyLocation !== 'No' && (
-          <span
-            className={`text-[0.65rem] uppercase tracking-[0.12em] py-0.5 px-1.5 rounded font-semibold shrink-0 ${
-              part.buyLocation.toLowerCase() === 'fleetari'
-                ? 'bg-blue-500/20 text-blue-300 border border-blue-500/50'
-                : 'bg-purple-500/20 text-purple-300 border border-purple-500/50'
-            }`}
+          <Tag
+            style={{
+              fontSize: '10px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.12em',
+              padding: '2px 6px',
+              margin: 0,
+              flexShrink: 0,
+              fontWeight: 600,
+              backgroundColor:
+                part.buyLocation.toLowerCase() === 'fleetari'
+                  ? 'rgba(59, 130, 246, 0.25)'
+                  : 'rgba(168, 85, 247, 0.25)',
+              borderColor:
+                part.buyLocation.toLowerCase() === 'fleetari'
+                  ? 'rgba(59, 130, 246, 0.6)'
+                  : 'rgba(168, 85, 247, 0.6)',
+              color:
+                part.buyLocation.toLowerCase() === 'fleetari'
+                  ? '#93c5fd'
+                  : '#c4b5fd',
+              borderWidth: 1,
+              borderStyle: 'solid',
+            }}
             data-location={part.buyLocation.toLowerCase()}
           >
             {part.buyLocation}
-          </span>
+          </Tag>
         )}
         {part.fasteners && part.fasteners !== '–' && (
-          <span className="text-[0.7rem] text-(--text-muted) py-0.5 px-1.5 rounded bg-[rgba(15,23,42,0.6)] border border-slate-400/30 whitespace-nowrap shrink-0 font-mono">{part.fasteners}</span>
+          <Tag
+            style={{
+              fontSize: '11px',
+              padding: '2px 6px',
+              margin: 0,
+              backgroundColor: 'rgba(15,23,42,0.6)',
+              borderColor: 'rgba(148, 163, 184, 0.3)',
+              color: '#94a3b8',
+              fontFamily: 'monospace',
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
+            }}
+          >
+            {part.fasteners}
+          </Tag>
         )}
-      </div>
+      </Space>
 
-      <div className="flex items-center gap-1.5 shrink-0">
+      <Space size="small" style={{ flexShrink: 0 }}>
         {partQty > 1 ? (
-          <div className="flex items-center gap-1.5 bg-[rgba(15,23,42,0.6)] border border-slate-400/30 rounded-lg p-0.5">
-            <button
-              type="button"
-              className="w-6 h-6 rounded-md border border-slate-400/50 bg-[rgba(15,23,42,0.8)] text-(--text-main) text-base font-semibold cursor-pointer flex items-center justify-center transition-all duration-150 shrink-0 hover:bg-[rgba(56,189,248,0.2)] hover:border-(--accent) hover:scale-105 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[rgba(15,23,42,0.8)] disabled:hover:border-slate-400/50 disabled:hover:scale-100"
-              aria-label={t('partRow.decrementAriaLabel', { partName: part.name })}
+          <Space.Compact
+            style={{
+              backgroundColor: 'rgba(15,23,42,0.6)',
+              border: '1px solid rgba(148, 163, 184, 0.3)',
+              borderRadius: 8,
+              padding: 2,
+            }}
+          >
+            <Button
+              size="small"
+              style={{
+                width: 24,
+                height: 24,
+                minWidth: 24,
+                minHeight: 24,
+                maxWidth: 24,
+                maxHeight: 24,
+                padding: 0,
+                fontSize: '16px',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                lineHeight: 1,
+                backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                borderColor: 'rgba(148, 163, 184, 0.5)',
+                color: '#e5e7eb',
+              }}
+              className="part-counter-button"
+              aria-label={t('partRow.decrementAriaLabel', {
+                partName: part.name,
+              })}
               disabled={effectiveQty <= 0}
               onClick={e => {
                 e.stopPropagation();
@@ -106,14 +211,45 @@ export function PartRow({
               }}
             >
               −
-            </button>
-            <span className="text-xs font-semibold text-(--text-main) min-w-[40px] text-center font-mono">
+            </Button>
+            <Text
+              style={{
+                fontSize: '12px',
+                fontWeight: 600,
+                minWidth: 40,
+                textAlign: 'center',
+                fontFamily: 'monospace',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
               {effectiveQty}/{partQty}
-            </span>
-            <button
-              type="button"
-              className="w-6 h-6 rounded-md border border-slate-400/50 bg-[rgba(15,23,42,0.8)] text-(--text-main) text-base font-semibold cursor-pointer flex items-center justify-center transition-all duration-150 shrink-0 hover:bg-[rgba(56,189,248,0.2)] hover:border-(--accent) hover:scale-105 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[rgba(15,23,42,0.8)] disabled:hover:border-slate-400/50 disabled:hover:scale-100"
-              aria-label={t('partRow.incrementAriaLabel', { partName: part.name })}
+            </Text>
+            <Button
+              size="small"
+              style={{
+                width: 24,
+                height: 24,
+                minWidth: 24,
+                minHeight: 24,
+                maxWidth: 24,
+                maxHeight: 24,
+                padding: 0,
+                fontSize: '16px',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                lineHeight: 1,
+                backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                borderColor: 'rgba(148, 163, 184, 0.5)',
+                color: '#e5e7eb',
+              }}
+              className="part-counter-button"
+              aria-label={t('partRow.incrementAriaLabel', {
+                partName: part.name,
+              })}
               disabled={effectiveQty >= partQty}
               onClick={e => {
                 e.stopPropagation();
@@ -121,42 +257,23 @@ export function PartRow({
               }}
             >
               +
-            </button>
-          </div>
+            </Button>
+          </Space.Compact>
         ) : (
-          <div className="flex items-center gap-1.5">
-            <span className="text-[0.72rem] text-(--text-muted) uppercase tracking-[0.16em]">{t('partRow.have')}</span>
-            <button
-              type="button"
-              className={`relative w-9 h-5 rounded-full border cursor-pointer shrink-0 transition-all duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-(--accent) focus-visible:outline-offset-2 ${
-                effectiveQty > 0
-                  ? 'bg-[rgba(34,197,94,0.2)] border-(--have-border)'
-                  : 'bg-(--card) border-slate-400/70'
-              }`}
-              role="switch"
-              aria-checked={effectiveQty > 0}
-              data-state={effectiveQty > 0 ? 'on' : 'off'}
+          <span
+            onClick={e => e.stopPropagation()}
+            onMouseDown={e => e.stopPropagation()}
+          >
+            <Switch
+              checked={effectiveQty > 0}
+              onChange={checked => {
+                handleQuantityChange(checked ? 1 : 0);
+              }}
               aria-label={t('partRow.markAriaLabel', { partName: part.name })}
-              onClick={e => {
-                e.stopPropagation();
-                handleQuantityChange(effectiveQty === 0 ? 1 : 0);
-              }}
-              onKeyDown={e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleQuantityChange(effectiveQty === 0 ? 1 : 0);
-                }
-              }}
-            >
-              <div className={`absolute top-[1px] left-[1px] w-4 h-4 rounded-full shadow-[0_1px_2px_rgba(15,23,42,0.6)] transition-transform duration-150 ${
-                effectiveQty > 0
-                  ? 'translate-x-[14px] bg-green-200'
-                  : 'bg-gray-200'
-              }`}></div>
-            </button>
-          </div>
+            />
+          </span>
         )}
-      </div>
+      </Space>
     </div>
   );
 }

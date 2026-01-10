@@ -1,3 +1,4 @@
+import { Col, Row } from 'antd';
 import { useState } from 'react';
 import { Header } from './components/Header';
 import { PartsInventory } from './components/PartsInventory/PartsInventory';
@@ -18,16 +19,26 @@ function App() {
   };
 
   return (
-    <div className="w-full max-w-317.5 flex flex-col gap-6">
-      <Header />
-      <main className="grid grid-cols-[minmax(0,2fr)_minmax(0,2.2fr)] gap-5 items-start max-[1050px]:grid-cols-1">
-        <PartsInventory
-          partStates={partState}
-          onQuantityChange={setPartQuantity}
-          onResetClick={handleResetClick}
-        />
-        <Summary partStates={partState} />
-      </main>
+    <div style={{ width: '100%', maxWidth: '1270px', margin: '0 auto' }}>
+      <Row gutter={[24, 24]}>
+        <Col span={24}>
+          <Header />
+        </Col>
+        <Col span={24}>
+          <Row gutter={[24, 24]}>
+            <Col xs={24} lg={12}>
+              <PartsInventory
+                partStates={partState}
+                onQuantityChange={setPartQuantity}
+                onResetClick={handleResetClick}
+              />
+            </Col>
+            <Col xs={24} lg={12}>
+              <Summary partStates={partState} />
+            </Col>
+          </Row>
+        </Col>
+      </Row>
       <ResetModal
         isOpen={isResetModalOpen}
         onClose={() => setIsResetModalOpen(false)}
