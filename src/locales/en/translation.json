@@ -1,0 +1,62 @@
+{
+  "header": {
+    "title": "{{gameName}} Parts Checklist",
+    "subtitle": "Engine · Suspension · Body · Interior",
+    "description": "Toggle each part to track whether you already have it. The summary below always reflects which parts you have on hand and which ones are still missing."
+  },
+  "partsInventory": {
+    "title": "Parts Inventory",
+    "subtitle": "Grouped by assembly · Click titles to collapse",
+    "reset": "Reset",
+    "resetTooltip": "Clear all selections",
+    "ariaLabel": "Car parts checklist"
+  },
+  "search": {
+    "placeholder": "Search parts by name...",
+    "ariaLabel": "Search parts by name"
+  },
+  "filters": {
+    "all": "All",
+    "have": "Have",
+    "missing": "Missing",
+    "ariaLabel": "Filter visible parts"
+  },
+  "category": {
+    "parts": "parts"
+  },
+  "partRow": {
+    "have": "Have",
+    "toggleAriaLabel": "Toggle \"{{partName}}\" - Click to mark as have or missing",
+    "markAriaLabel": "Mark \"{{partName}}\" as have or missing",
+    "decrementAriaLabel": "Decrement {{partName}}",
+    "incrementAriaLabel": "Increment {{partName}}"
+  },
+  "summary": {
+    "title": "Summary",
+    "subtitle": "Live breakdown of owned vs missing parts"
+  },
+  "metrics": {
+    "totalParts": "Total Parts",
+    "have": "Have",
+    "missing": "Missing"
+  },
+  "partsList": {
+    "haveTitle": "Parts I Have",
+    "missingTitle": "Parts I Am Missing",
+    "have": "Have",
+    "missing": "Missing",
+    "item": "item",
+    "items": "items",
+    "noPartsSelected": "No parts selected yet.",
+    "noPartsMissing": "No parts are missing. Nice work."
+  },
+  "resetModal": {
+    "title": "Reset All Data?",
+    "description": "This will clear all your part selections and cannot be undone. Are you sure you want to continue?",
+    "cancel": "Cancel",
+    "confirm": "Confirm Reset"
+  },
+  "languageSwitcher": {
+    "ariaLabel": "Change language"
+  }
+}

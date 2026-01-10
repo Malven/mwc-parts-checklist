@@ -1,0 +1,62 @@
+{
+  "header": {
+    "title": "{{gameName}} Delar Checklista",
+    "subtitle": "Motor · Chassi · Karosseri · Interiör",
+    "description": "Växla varje del för att spåra om du redan har den. Sammanfattningen nedan visar alltid vilka delar du har till hands och vilka som fortfarande saknas."
+  },
+  "partsInventory": {
+    "title": "Delsinventering",
+    "subtitle": "Grupperad efter montering · Klicka på titlar för att dölja",
+    "reset": "Återställ",
+    "resetTooltip": "Rensa alla val",
+    "ariaLabel": "Bildelschecklista"
+  },
+  "search": {
+    "placeholder": "Sök delar efter namn...",
+    "ariaLabel": "Sök delar efter namn"
+  },
+  "filters": {
+    "all": "Alla",
+    "have": "Har",
+    "missing": "Saknas",
+    "ariaLabel": "Filtrera synliga delar"
+  },
+  "category": {
+    "parts": "delar"
+  },
+  "partRow": {
+    "have": "Har",
+    "toggleAriaLabel": "Växla \"{{partName}}\" - Klicka för att markera som har eller saknas",
+    "markAriaLabel": "Markera \"{{partName}}\" som har eller saknas",
+    "decrementAriaLabel": "Minska {{partName}}",
+    "incrementAriaLabel": "Öka {{partName}}"
+  },
+  "summary": {
+    "title": "Sammanfattning",
+    "subtitle": "Live-uppdelning av ägda vs saknade delar"
+  },
+  "metrics": {
+    "totalParts": "Totalt antal delar",
+    "have": "Har",
+    "missing": "Saknas"
+  },
+  "partsList": {
+    "haveTitle": "Delar jag har",
+    "missingTitle": "Delar jag saknar",
+    "have": "Har",
+    "missing": "Saknas",
+    "item": "artikel",
+    "items": "artiklar",
+    "noPartsSelected": "Inga delar valda ännu.",
+    "noPartsMissing": "Inga delar saknas. Bra jobbat."
+  },
+  "resetModal": {
+    "title": "Återställ all data?",
+    "description": "Detta kommer att rensa alla dina delval och kan inte ångras. Är du säker på att du vill fortsätta?",
+    "cancel": "Avbryt",
+    "confirm": "Bekräfta återställning"
+  },
+  "languageSwitcher": {
+    "ariaLabel": "Ändra språk"
+  }
+}

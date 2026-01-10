@@ -1,0 +1,62 @@
+{
+  "header": {
+    "title": "{{gameName}} Osat - Tarkistuslista",
+    "subtitle": "Moottori · Jousitus · Kori · Sisusta",
+    "description": "Vaihda jokaisen osan tilaa seurataksesi, onko sinulla se jo. Yhteenveto alla näyttää aina, mitkä osat sinulla on käytettävissä ja mitkä puuttuvat vielä."
+  },
+  "partsInventory": {
+    "title": "Osaluettelo",
+    "subtitle": "Ryhmitelty kokoonpanon mukaan · Klikkaa otsikoita piilottaaksesi",
+    "reset": "Nollaa",
+    "resetTooltip": "Tyhjennä kaikki valinnat",
+    "ariaLabel": "Auton osat -tarkistuslista"
+  },
+  "search": {
+    "placeholder": "Etsi osia nimen perusteella...",
+    "ariaLabel": "Etsi osia nimen perusteella"
+  },
+  "filters": {
+    "all": "Kaikki",
+    "have": "On",
+    "missing": "Puuttuu",
+    "ariaLabel": "Suodata näkyviä osia"
+  },
+  "category": {
+    "parts": "osaa"
+  },
+  "partRow": {
+    "have": "On",
+    "toggleAriaLabel": "Vaihda \"{{partName}}\" - Klikkaa merkitäksesi omistetuksi tai puuttuvaksi",
+    "markAriaLabel": "Merkitse \"{{partName}}\" omistetuksi tai puuttuvaksi",
+    "decrementAriaLabel": "Vähennä {{partName}}",
+    "incrementAriaLabel": "Lisää {{partName}}"
+  },
+  "summary": {
+    "title": "Yhteenveto",
+    "subtitle": "Live-jako omistetuista vs puuttuvista osista"
+  },
+  "metrics": {
+    "totalParts": "Osia yhteensä",
+    "have": "On",
+    "missing": "Puuttuu"
+  },
+  "partsList": {
+    "haveTitle": "Minulla olevat osat",
+    "missingTitle": "Minulta puuttuvat osat",
+    "have": "On",
+    "missing": "Puuttuu",
+    "item": "kappale",
+    "items": "kappaletta",
+    "noPartsSelected": "Osia ei ole vielä valittu.",
+    "noPartsMissing": "Osia ei puutu. Hyvää työtä."
+  },
+  "resetModal": {
+    "title": "Nollataanko kaikki tiedot?",
+    "description": "Tämä tyhjentää kaikki osavalintasi, eikä toimintoa voi perua. Haluatko varmasti jatkaa?",
+    "cancel": "Peruuta",
+    "confirm": "Vahvista nollaus"
+  },
+  "languageSwitcher": {
+    "ariaLabel": "Vaihda kieltä"
+  }
+}
