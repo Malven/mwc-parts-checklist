@@ -1,4 +1,3 @@
-import { Input } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 interface SearchInputProps {
@@ -10,7 +9,9 @@ export function SearchInput({ value, onChange }: SearchInputProps) {
   const { t } = useTranslation();
 
   return (
-    <Input
+    <input
+      type="text"
+      className="input"
       placeholder={t('search.placeholder')}
       aria-label={t('search.ariaLabel')}
       value={value}

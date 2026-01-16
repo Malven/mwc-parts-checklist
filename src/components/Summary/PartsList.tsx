@@ -1,8 +1,5 @@
-import { Badge, Card, Col, Row, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { SummaryPart } from '../../types';
-
-const { Text } = Typography;
 
 interface PartItemProps {
   content: string;
@@ -10,19 +7,16 @@ interface PartItemProps {
 
 function PartItem({ content }: PartItemProps) {
   return (
-    <div style={{ padding: '2px 0' }}>
-      <Space size="small">
-        <div
-          style={{
-            width: 4,
-            height: 4,
-            borderRadius: '50%',
-            backgroundColor: 'rgba(148, 163, 184, 0.7)',
-            flexShrink: 0,
-          }}
-        />
-        <Text style={{ fontSize: '14px' }}>{content}</Text>
-      </Space>
+    <div className="parts-list-item">
+      <div className="flex gap-md items-center">
+        <div className="parts-list-dot" />
+        <span
+          className="text-primary"
+          style={{ fontSize: '14px', lineHeight: 1.5 }}
+        >
+          {content}
+        </span>
+      </div>
     </div>
   );
 }
@@ -53,126 +47,148 @@ export function PartsList({ haveParts, missingParts }: PartsListProps) {
     }));
 
   return (
-    <Row gutter={10} style={{ marginTop: 10 }}>
-      <Col xs={24} sm={12}>
-        <Card
-          size="small"
-          style={{
-            borderRadius: 12,
-            backgroundColor: 'rgba(15,23,42,0.9)',
-            borderColor: 'rgba(148, 163, 184, 0.9)',
-          }}
-          styles={{ body: { padding: '8px 10px 6px' } }}
-        >
-          <Space orientation="vertical" size="small" style={{ width: '100%' }}>
-            <Space>
-              <Badge color="#22c55e" />
-              <Text
-                type="secondary"
+    <div className="grid-responsive" style={{ marginTop: 16, gap: 12 }}>
+      <div className="parts-list-card parts-list-card-success">
+        <div className="parts-list-header">
+          <div className="flex gap-md items-center">
+            <div
+              className="parts-list-icon"
+              style={{
+                background: 'var(--color-success-bg)',
+                borderColor: 'var(--color-success-border)',
+              }}
+            >
+              <span
+                className="badge badge-success"
+                style={{ width: 12, height: 12 }}
+              />
+            </div>
+            <div>
+              <h4
+                className="text-uppercase-sm"
                 style={{
                   fontSize: '12px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.16em',
-                  whiteSpace: 'nowrap',
+                  margin: 0,
+                  marginBottom: 2,
+                  color: 'var(--color-success)',
                 }}
               >
                 {t('partsList.haveTitle')}
-              </Text>
-            </Space>
-            <Text type="secondary" style={{ fontSize: '12px' }}>
-              {haveParts.length === 1
-                ? `1 ${t('partsList.item')}`
-                : `${haveParts.length} ${t('partsList.items')}`}
-            </Text>
-            <div
-              style={{
-                fontSize: '14px',
-                maxHeight: '170px',
-                overflowY: 'auto',
-                overflowX: 'hidden',
-                paddingRight: 2,
-              }}
-              className="scrollbar-custom"
-            >
-              {haveParts.length === 0 ? (
-                <Text
-                  type="secondary"
-                  italic
-                  style={{ fontSize: '12px', display: 'block' }}
-                >
-                  {t('partsList.noPartsSelected')}
-                </Text>
-              ) : (
-                <div>
-                  {haveListItems.map(item => (
-                    <PartItem key={item.key} content={item.content} />
-                  ))}
-                </div>
-              )}
+              </h4>
+              <p
+                className="text-secondary"
+                style={{ fontSize: '11px', margin: 0 }}
+              >
+                {haveParts.length === 1
+                  ? `1 ${t('partsList.item')}`
+                  : `${haveParts.length} ${t('partsList.items')}`}
+              </p>
             </div>
-          </Space>
-        </Card>
-      </Col>
-
-      <Col xs={24} sm={12}>
-        <Card
-          size="small"
+          </div>
+        </div>
+        <div
+          className="parts-list-content scrollbar-custom"
           style={{
-            borderRadius: 12,
-            backgroundColor: 'rgba(15,23,42,0.9)',
-            borderColor: 'rgba(148, 163, 184, 0.9)',
+            fontSize: '14px',
+            maxHeight: '200px',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            paddingRight: 4,
           }}
-          styles={{ body: { padding: '8px 10px 6px' } }}
         >
-          <Space orientation="vertical" size="small" style={{ width: '100%' }}>
-            <Space>
-              <Badge color="#f97316" />
-              <Text
-                type="secondary"
+          {haveParts.length === 0 ? (
+            <p
+              className="text-secondary parts-list-empty"
+              style={{
+                fontSize: '12px',
+                display: 'block',
+                fontStyle: 'italic',
+                textAlign: 'center',
+                padding: '20px 0',
+              }}
+            >
+              {t('partsList.noPartsSelected')}
+            </p>
+          ) : (
+            <div className="parts-list-items">
+              {haveListItems.map(item => (
+                <PartItem key={item.key} content={item.content} />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="parts-list-card parts-list-card-error">
+        <div className="parts-list-header">
+          <div className="flex gap-md items-center">
+            <div
+              className="parts-list-icon"
+              style={{
+                background: 'var(--color-error-bg)',
+                borderColor: 'var(--color-error-border)',
+              }}
+            >
+              <span
+                className="badge badge-error"
+                style={{ width: 12, height: 12 }}
+              />
+            </div>
+            <div>
+              <h4
+                className="text-uppercase-sm"
                 style={{
                   fontSize: '12px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.16em',
-                  whiteSpace: 'nowrap',
+                  margin: 0,
+                  marginBottom: 2,
+                  color: 'var(--color-error)',
                 }}
               >
                 {t('partsList.missingTitle')}
-              </Text>
-            </Space>
-            <Text type="secondary" style={{ fontSize: '12px' }}>
-              {missingParts.length === 1
-                ? `1 ${t('partsList.item')}`
-                : `${missingParts.length} ${t('partsList.items')}`}
-            </Text>
-            <div
-              style={{
-                fontSize: '14px',
-                maxHeight: '170px',
-                overflowY: 'auto',
-                overflowX: 'hidden',
-                paddingRight: 2,
-              }}
-              className="scrollbar-custom"
-            >
-              {missingParts.length === 0 ? (
-                <Text
-                  type="secondary"
-                  italic
-                  style={{ fontSize: '12px', display: 'block' }}
-                >
-                  {t('partsList.noPartsMissing')}
-                </Text>
-              ) : (
-                <div>
-                  {missingListItems.map(item => (
-                    <PartItem key={item.key} content={item.content} />
-                  ))}
-                </div>
-              )}
+              </h4>
+              <p
+                className="text-secondary"
+                style={{ fontSize: '11px', margin: 0 }}
+              >
+                {missingParts.length === 1
+                  ? `1 ${t('partsList.item')}`
+                  : `${missingParts.length} ${t('partsList.items')}`}
+              </p>
             </div>
-          </Space>
-        </Card>
-      </Col>
-    </Row>
+          </div>
+        </div>
+        <div
+          className="parts-list-content scrollbar-custom"
+          style={{
+            fontSize: '14px',
+            maxHeight: '200px',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            paddingRight: 4,
+          }}
+        >
+          {missingParts.length === 0 ? (
+            <p
+              className="text-secondary parts-list-empty"
+              style={{
+                fontSize: '12px',
+                display: 'block',
+                fontStyle: 'italic',
+                textAlign: 'center',
+                padding: '20px 0',
+              }}
+            >
+              {t('partsList.noPartsMissing')}
+            </p>
+          ) : (
+            <div className="parts-list-items">
+              {missingListItems.map(item => (
+                <PartItem key={item.key} content={item.content} />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

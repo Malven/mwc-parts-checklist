@@ -1,10 +1,9 @@
-import { ConfigProvider } from 'antd';
-import { StrictMode, Suspense } from 'react';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
-import { appTheme } from './config/theme';
+import { RouterProvider } from 'react-router-dom';
 import './i18n/config';
 import './index.css';
+import { router } from './routes.tsx';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -13,24 +12,6 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    <ConfigProvider theme={appTheme}>
-      <Suspense
-        fallback={
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              minHeight: '100vh',
-              color: '#e5e7eb',
-            }}
-          >
-            Loading...
-          </div>
-        }
-      >
-        <App />
-      </Suspense>
-    </ConfigProvider>
+    <RouterProvider router={router} />
   </StrictMode>
 );

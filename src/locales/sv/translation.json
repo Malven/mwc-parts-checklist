@@ -1,8 +1,10 @@
 {
   "header": {
-    "title": "{{gameName}} Delar Checklista",
+    "title": "{{gameName}} Checklista",
     "subtitle": "Motor · Chassi · Karosseri · Interiör",
-    "description": "Växla varje del för att spåra om du redan har den. Sammanfattningen nedan visar alltid vilka delar du har till hands och vilka som fortfarande saknas."
+    "description": "Växla varje del för att spåra om du redan har den. Sammanfattningen nedan visar alltid vilka delar du har till hands och vilka som fortfarande saknas.",
+    "buildCar": "Bygg bil",
+    "partsInventory": "Inventering av delar"
   },
   "partsInventory": {
     "title": "Delsinventering",
@@ -58,5 +60,8 @@
   },
   "languageSwitcher": {
     "ariaLabel": "Ändra språk"
+  },
+  "buildCarPage": {
+    "title": "Bygg bil"
   }
 }

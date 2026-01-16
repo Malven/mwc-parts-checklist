@@ -1,7 +1,5 @@
-import { Modal, Typography } from 'antd';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-
-const { Text } = Typography;
 
 interface ResetModalProps {
   isOpen: boolean;
@@ -11,43 +9,74 @@ interface ResetModalProps {
 
 export function ResetModal({ isOpen, onClose, onConfirm }: ResetModalProps) {
   const { t } = useTranslation();
+  const modalRef = useRef<HTMLDivElement>(null);
+  const firstButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleConfirm = () => {
     onConfirm();
     onClose();
   };
 
+  useEffect(() => {
+    if (isOpen) {
+      firstButtonRef.current?.focus();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
   return (
-    <Modal
-      open={isOpen}
-      onCancel={onClose}
-      onOk={handleConfirm}
-      title={t('resetModal.title')}
-      okText={t('resetModal.confirm')}
-      cancelText={t('resetModal.cancel')}
-      okButtonProps={{
-        danger: true,
-        style: {
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-        },
-      }}
-      cancelButtonProps={{
-        style: {
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-        },
-      }}
-      width={420}
-      styles={{
-        body: {
-          borderRadius: 18,
-        },
-      }}
-    >
-      <Text type="secondary" style={{ fontSize: '14px', lineHeight: 1.75 }}>
-        {t('resetModal.description')}
-      </Text>
-    </Modal>
+    <div className="modal-overlay" onClick={onClose}>
+      <div
+        className="modal-content"
+        onClick={e => e.stopPropagation()}
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
+        <div className="modal-header">
+          <h2 id="modal-title" className="modal-title">
+            {t('resetModal.title')}
+          </h2>
+        </div>
+        <div className="modal-body">{t('resetModal.description')}</div>
+        <div className="modal-footer">
+          <button
+            className="btn btn-ghost text-uppercase"
+            onClick={onClose}
+            style={{ letterSpacing: '0.05em' }}
+          >
+            {t('resetModal.cancel')}
+          </button>
+          <button
+            ref={firstButtonRef}
+            className="btn btn-danger text-uppercase"
+            onClick={handleConfirm}
+            style={{ letterSpacing: '0.05em' }}
+          >
+            {t('resetModal.confirm')}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

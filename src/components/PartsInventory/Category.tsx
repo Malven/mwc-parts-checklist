@@ -1,12 +1,8 @@
-import type { CollapseProps } from 'antd';
-import { Collapse, Space, Typography } from 'antd';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createPartId } from '../../data/parts';
 import { Category as CategoryType, Part } from '../../types';
 import { PartRow } from './PartRow';
-
-const { Text } = Typography;
 
 interface CategoryProps {
   category: CategoryType;
@@ -64,62 +60,46 @@ export function Category({
     );
   });
 
-  const collapseItems: CollapseProps['items'] = [
-    {
-      key: '1',
-      label: (
-        <Space>
-          <Text
+  return (
+    <div className={`accordion-item ${!isCollapsed ? 'active' : ''}`}>
+      <button
+        className="accordion-header"
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        aria-expanded={!isCollapsed}
+        type="button"
+      >
+        <div className="flex gap-md items-center flex-wrap">
+          <span
+            className="text-uppercase"
             style={{
               fontSize: '0.78rem',
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
               fontWeight: 500,
+              letterSpacing: '0.18em',
             }}
           >
             {category.name}
-          </Text>
-          <Text
+          </span>
+          <span
             style={{
               fontSize: '0.72rem',
-              color: '#38bdf8',
+              color: 'var(--color-primary)',
               fontWeight: 500,
             }}
           >
             {partCount} {t('category.parts')}
-          </Text>
-        </Space>
-      ),
-      children: (
-        <Space
-          orientation="vertical"
-          size="small"
-          style={{ width: '100%', marginTop: 6 }}
-        >
-          {parts}
-        </Space>
-      ),
-      styles: {
-        body: {
-          padding: '10px 10px 6px',
-        },
-      },
-    },
-  ];
-
-  return (
-    <Collapse
-      activeKey={isCollapsed ? [] : ['1']}
-      onChange={() => setIsCollapsed(!isCollapsed)}
-      items={collapseItems}
-      style={{
-        borderRadius: 14,
-        borderColor: 'rgba(148, 163, 184, 0.8)',
-        background:
-          'radial-gradient(circle at top left, rgba(15,23,42,0.9), #020617)',
-        marginBottom: 0,
-      }}
-      ghost
-    />
+          </span>
+        </div>
+        <span className="accordion-icon" aria-hidden="true">
+          ▼
+        </span>
+      </button>
+      <div className="accordion-content">
+        <div className="accordion-body">
+          <div className="flex flex-col gap-sm" style={{ width: '100%' }}>
+            {parts}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

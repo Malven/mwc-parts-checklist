@@ -1,6 +1,5 @@
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dropdown, Button, Space } from 'antd';
-import type { MenuProps } from 'antd';
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -10,57 +9,67 @@ const languages = [
 
 export function LanguageSwitcher() {
   const { i18n, t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const currentLanguage =
     languages.find(lang => lang.code === i18n.language) || languages[0];
 
   const handleLanguageChange = (langCode: string) => {
     i18n.changeLanguage(langCode);
+    setIsOpen(false);
   };
 
-  const menuItems: MenuProps['items'] = languages.map(lang => ({
-    key: lang.code,
-    label: (
-      <Space>
-        <span style={{ fontSize: '18px' }}>{lang.flag}</span>
-        <span style={{ flex: 1 }}>{lang.name}</span>
-        {i18n.language === lang.code && (
-          <span style={{ color: '#38bdf8' }}>✓</span>
-        )}
-      </Space>
-    ),
-    onClick: () => handleLanguageChange(lang.code),
-    style: {
-      backgroundColor:
-        i18n.language === lang.code ? 'rgba(56,189,248,0.2)' : 'transparent',
-      color: i18n.language === lang.code ? '#38bdf8' : undefined,
-    },
-  }));
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 
   return (
-    <Dropdown
-      menu={{ items: menuItems }}
-      trigger={['click']}
-      placement="bottomRight"
-    >
-      <Button
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-          padding: '6px 12px',
-          height: 'auto',
-          borderColor: 'rgba(148, 163, 184, 0.3)',
-          backgroundColor: 'rgba(15,23,42,0.8)',
-        }}
+    <div className="dropdown" ref={dropdownRef}>
+      <button
+        className="btn btn-ghost btn-small"
+        onClick={() => setIsOpen(!isOpen)}
         aria-label={t('languageSwitcher.ariaLabel')}
+        aria-expanded={isOpen}
       >
         <span style={{ fontSize: '18px' }}>{currentLanguage.flag}</span>
-        <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <span className="text-uppercase" style={{ letterSpacing: '0.05em' }}>
           {currentLanguage.code}
         </span>
         <span style={{ fontSize: '11px' }}>▾</span>
-      </Button>
-    </Dropdown>
+      </button>
+      {isOpen && (
+        <div className="dropdown-menu">
+          {languages.map(lang => (
+            <div
+              key={lang.code}
+              className={`dropdown-item ${i18n.language === lang.code ? 'active' : ''}`}
+              onClick={() => handleLanguageChange(lang.code)}
+            >
+              <span style={{ fontSize: '18px' }}>{lang.flag}</span>
+              <span style={{ flex: 1 }}>{lang.name}</span>
+              {i18n.language === lang.code && (
+                <span style={{ color: 'var(--color-primary)' }}>✓</span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

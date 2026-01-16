@@ -1,12 +1,9 @@
-import { Card, Space, Typography } from 'antd';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createPartId, PART_CATEGORIES } from '../../data/parts';
 import { SummaryPart } from '../../types';
 import { Metrics } from './Metrics';
 import { PartsList } from './PartsList';
-
-const { Text } = Typography;
 
 interface SummaryProps {
   partStates: Record<string, number>;
@@ -58,42 +55,23 @@ export function Summary({ partStates }: SummaryProps) {
   }, [partStates]);
 
   return (
-    <Card
-      style={{
-        borderRadius: 18,
-        borderColor: 'rgba(148,163,184,0.15)',
-        boxShadow:
-          '0 24px 60px rgba(15,23,42,0.8), 0 0 0 1px rgba(15,23,42,0.9)',
-        backdropFilter: 'blur(12px)',
-      }}
-      styles={{ body: { padding: '18px 18px 16px' } }}
-    >
-      <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
-        <div>
-          <Text
-            style={{
-              fontSize: '0.95rem',
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              color: '#94a3b8',
-              display: 'block',
-            }}
-          >
+    <div className="card">
+      <div className="flex flex-col gap-xl" style={{ width: '100%' }}>
+        <div className="summary-header">
+          <h2 className="heading-2" style={{ margin: 0, marginBottom: 6 }}>
             {t('summary.title')}
-          </Text>
-          <Text
-            type="secondary"
-            style={{
-              fontSize: '0.8rem',
-              display: 'block',
-            }}
+          </h2>
+          <p
+            className="text-secondary"
+            style={{ display: 'block', fontSize: '0.875rem' }}
           >
             {t('summary.subtitle')}
-          </Text>
+          </p>
         </div>
 
         <section
-          style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+          className="flex flex-col"
+          style={{ gap: 20 }}
           aria-live="polite"
         >
           <Metrics
@@ -106,7 +84,7 @@ export function Summary({ partStates }: SummaryProps) {
             missingParts={summaryData.missingParts}
           />
         </section>
-      </Space>
-    </Card>
+      </div>
+    </div>
   );
 }

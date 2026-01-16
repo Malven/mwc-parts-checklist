@@ -1,65 +1,46 @@
-import { Space, Tag, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { Link, useLocation } from 'react-router-dom';
 import { LanguageSwitcher } from './LanguageSwitcher';
-
-const { Title, Text } = Typography;
 
 export function Header() {
   const { t } = useTranslation();
+  const location = useLocation();
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <header>
-      <Space orientation="vertical" size="small" style={{ width: '100%' }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            gap: 12,
-            flexWrap: 'wrap',
-          }}
-        >
-          <Space size="middle" wrap>
-            <Title
-              level={1}
-              style={{
-                margin: 0,
-                fontSize: '1.75rem',
-                letterSpacing: '0.03em',
-                textTransform: 'uppercase',
-                fontWeight: 600,
-              }}
-            >
+      <div className="flex flex-col gap-sm w-full">
+        <div className="flex justify-between items-start gap-md flex-wrap">
+          <div className="flex gap-lg flex-wrap">
+            <h1 className="heading-1 mt-0 mb-0">
               {t('header.title', { gameName: 'My Winter Car' })}
-            </Title>
-            <Tag
-              style={{
-                fontSize: '12px',
-                textTransform: 'uppercase',
-                letterSpacing: '0.16em',
-                padding: '4px 10px',
-                borderRadius: '999px',
-                borderColor: 'rgba(56,189,248,0.5)',
-                backgroundColor: 'rgba(15,23,42,0.8)',
-                color: '#38bdf8',
-              }}
-            >
-              {t('header.subtitle')}
-            </Tag>
-          </Space>
+            </h1>
+            <span className="tag tag-primary">{t('header.subtitle')}</span>
+          </div>
           <LanguageSwitcher />
         </div>
-        <Text
-          type="secondary"
-          style={{
-            fontSize: '14px',
-            maxWidth: '640px',
-            display: 'block',
-          }}
+        <nav className="nav-links" aria-label="Main navigation">
+          <Link
+            to="/"
+            className={`nav-link ${isActive('/') ? 'nav-link-active' : ''}`}
+          >
+            {t('header.partsInventory')}
+          </Link>
+          {/* <Link
+            to="/build"
+            className={`nav-link ${isActive('/build') ? 'nav-link-active' : ''}`}
+          >
+            {t('header.buildCar')}
+          </Link> */}
+        </nav>
+        <p
+          className="text-secondary"
+          style={{ maxWidth: '640px', display: 'block' }}
         >
           {t('header.description')}
-        </Text>
-      </Space>
+        </p>
+      </div>
     </header>
   );
 }

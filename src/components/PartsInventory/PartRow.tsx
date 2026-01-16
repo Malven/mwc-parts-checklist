@@ -1,10 +1,7 @@
-import { Button, Space, Switch, Tag, Typography } from 'antd';
 import { type KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createPartId } from '../../data/parts';
 import { Part } from '../../types';
-
-const { Text } = Typography;
 
 interface PartRowProps {
   part: Part;
@@ -52,43 +49,16 @@ export function PartRow({
   const isHave = effectiveQty === partQty;
   const isPartial = !isMissing && !isHave;
 
-  const getRowStyle = () => {
-    if (isMissing) {
-      return {
-        backgroundColor: 'rgba(248, 113, 113, 0.06)',
-        borderColor: 'rgba(248, 113, 113, 0.4)',
-      };
-    } else if (isHave) {
-      return {
-        backgroundColor: 'rgba(34, 197, 94, 0.18)',
-        borderColor: '#22c55e',
-      };
-    } else if (isPartial) {
-      return {
-        backgroundColor: 'rgba(251, 191, 36, 0.12)',
-        borderColor: 'rgba(251, 191, 36, 0.4)',
-      };
-    }
-    return {
-      backgroundColor: 'rgba(15,23,42,0.8)',
-      borderColor: 'transparent',
-    };
+  const getRowClass = () => {
+    if (isMissing) return 'part-row part-row-missing';
+    if (isHave) return 'part-row part-row-have';
+    if (isPartial) return 'part-row part-row-partial';
+    return 'part-row part-row-default';
   };
 
   return (
     <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 8,
-        padding: '6px 8px',
-        borderRadius: '8px',
-        border: '1px solid',
-        cursor: partQty === 1 ? 'pointer' : 'default',
-        transition: 'all 0.14s',
-        ...getRowStyle(),
-      }}
+      className={`${getRowClass()} ${partQty === 1 ? 'part-row-clickable' : ''}`}
       data-part-id={partId}
       data-part-qty={partQty}
       tabIndex={partQty === 1 ? 0 : undefined}
@@ -101,106 +71,39 @@ export function PartRow({
       onClick={partQty === 1 ? handleRowClick : undefined}
       onKeyDown={partQty === 1 ? handleKeyDown : undefined}
     >
-      <Space size="small" wrap style={{ flex: 1, minWidth: 0 }}>
-        <div
+      <div className="flex gap-sm flex-wrap" style={{ flex: 1, minWidth: 0 }}>
+        <span
+          className="text-primary"
           style={{
-            width: 7,
-            height: 7,
-            borderRadius: '50%',
-            backgroundColor: 'rgba(148, 163, 184, 0.7)',
-            flexShrink: 0,
-          }}
-        />
-        <Text
-          style={{
-            fontSize: '14px',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
             overflow: 'hidden',
           }}
         >
           {part.name}
-        </Text>
+        </span>
         {part.buyLocation !== 'No' && (
-          <Tag
-            style={{
-              fontSize: '10px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.12em',
-              padding: '2px 6px',
-              margin: 0,
-              flexShrink: 0,
-              fontWeight: 600,
-              backgroundColor:
-                part.buyLocation.toLowerCase() === 'fleetari'
-                  ? 'rgba(59, 130, 246, 0.25)'
-                  : 'rgba(168, 85, 247, 0.25)',
-              borderColor:
-                part.buyLocation.toLowerCase() === 'fleetari'
-                  ? 'rgba(59, 130, 246, 0.6)'
-                  : 'rgba(168, 85, 247, 0.6)',
-              color:
-                part.buyLocation.toLowerCase() === 'fleetari'
-                  ? '#93c5fd'
-                  : '#c4b5fd',
-              borderWidth: 1,
-              borderStyle: 'solid',
-            }}
+          <span
+            className={`tag ${
+              part.buyLocation.toLowerCase() === 'fleetari'
+                ? 'tag-fleetari'
+                : 'tag-junkyard'
+            }`}
             data-location={part.buyLocation.toLowerCase()}
           >
             {part.buyLocation}
-          </Tag>
+          </span>
         )}
         {part.fasteners && part.fasteners !== '–' && (
-          <Tag
-            style={{
-              fontSize: '11px',
-              padding: '2px 6px',
-              margin: 0,
-              backgroundColor: 'rgba(15,23,42,0.6)',
-              borderColor: 'rgba(148, 163, 184, 0.3)',
-              color: '#94a3b8',
-              fontFamily: 'monospace',
-              whiteSpace: 'nowrap',
-              flexShrink: 0,
-            }}
-          >
-            {part.fasteners}
-          </Tag>
+          <span className="tag tag-fastener">{part.fasteners}</span>
         )}
-      </Space>
+      </div>
 
-      <Space size="small" style={{ flexShrink: 0 }}>
+      <div className="flex gap-sm" style={{ flexShrink: 0 }}>
         {partQty > 1 ? (
-          <Space.Compact
-            style={{
-              backgroundColor: 'rgba(15,23,42,0.6)',
-              border: '1px solid rgba(148, 163, 184, 0.3)',
-              borderRadius: 8,
-              padding: 2,
-            }}
-          >
-            <Button
-              size="small"
-              style={{
-                width: 24,
-                height: 24,
-                minWidth: 24,
-                minHeight: 24,
-                maxWidth: 24,
-                maxHeight: 24,
-                padding: 0,
-                fontSize: '16px',
-                fontWeight: 600,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                lineHeight: 1,
-                backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                borderColor: 'rgba(148, 163, 184, 0.5)',
-                color: '#e5e7eb',
-              }}
-              className="part-counter-button"
+          <div className="part-counter">
+            <button
+              className="btn btn-icon part-counter-button"
               aria-label={t('partRow.decrementAriaLabel', {
                 partName: part.name,
               })}
@@ -211,42 +114,12 @@ export function PartRow({
               }}
             >
               −
-            </Button>
-            <Text
-              style={{
-                fontSize: '12px',
-                fontWeight: 600,
-                minWidth: 40,
-                textAlign: 'center',
-                fontFamily: 'monospace',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+            </button>
+            <span className="part-counter-value">
               {effectiveQty}/{partQty}
-            </Text>
-            <Button
-              size="small"
-              style={{
-                width: 24,
-                height: 24,
-                minWidth: 24,
-                minHeight: 24,
-                maxWidth: 24,
-                maxHeight: 24,
-                padding: 0,
-                fontSize: '16px',
-                fontWeight: 600,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                lineHeight: 1,
-                backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                borderColor: 'rgba(148, 163, 184, 0.5)',
-                color: '#e5e7eb',
-              }}
-              className="part-counter-button"
+            </span>
+            <button
+              className="btn btn-icon part-counter-button"
               aria-label={t('partRow.incrementAriaLabel', {
                 partName: part.name,
               })}
@@ -257,23 +130,26 @@ export function PartRow({
               }}
             >
               +
-            </Button>
-          </Space.Compact>
+            </button>
+          </div>
         ) : (
-          <span
+          <label
+            className="switch"
             onClick={e => e.stopPropagation()}
             onMouseDown={e => e.stopPropagation()}
           >
-            <Switch
+            <input
+              type="checkbox"
               checked={effectiveQty > 0}
-              onChange={checked => {
-                handleQuantityChange(checked ? 1 : 0);
+              onChange={e => {
+                handleQuantityChange(e.target.checked ? 1 : 0);
               }}
               aria-label={t('partRow.markAriaLabel', { partName: part.name })}
             />
-          </span>
+            <span className="switch-slider" />
+          </label>
         )}
-      </Space>
+      </div>
     </div>
   );
 }

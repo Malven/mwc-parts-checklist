@@ -1,8 +1,10 @@
 {
   "header": {
-    "title": "{{gameName}} Parts Checklist",
+    "title": "{{gameName}} Checklist",
     "subtitle": "Engine · Suspension · Body · Interior",
-    "description": "Toggle each part to track whether you already have it. The summary below always reflects which parts you have on hand and which ones are still missing."
+    "description": "Toggle each part to track whether you already have it. The summary below always reflects which parts you have on hand and which ones are still missing.",
+    "partsInventory": "Parts Inventory",
+    "buildCar": "Build Car"
   },
   "partsInventory": {
     "title": "Parts Inventory",
@@ -58,5 +60,8 @@
   },
   "languageSwitcher": {
     "ariaLabel": "Change language"
+  },
+  "buildCarPage": {
+    "title": "Build Car"
   }
 }

@@ -1,7 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { Row, Col, Card, Typography } from 'antd';
-
-const { Text } = Typography;
 
 interface MetricsProps {
   totalNeeded: number;
@@ -15,114 +12,114 @@ export function Metrics({
   totalMissing,
 }: MetricsProps) {
   const { t } = useTranslation();
+  const completionPercentage =
+    totalNeeded > 0 ? Math.round((totalHave / totalNeeded) * 100) : 0;
 
   return (
-    <Row gutter={8}>
-      <Col xs={8} sm={8}>
-        <Card
-          size="small"
-          style={{
-            borderRadius: 12,
-            background:
-              'radial-gradient(circle at top, rgba(15,23,42,0.9), #020617)',
-            borderColor: 'rgba(148, 163, 184, 0.9)',
-            padding: '8px 10px',
-          }}
-          styles={{ body: { padding: '8px 10px' } }}
-        >
-          <Text
-            type="secondary"
-            style={{
-              fontSize: '11px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.16em',
-              display: 'block',
-              marginBottom: 3,
-            }}
+    <div className="flex flex-col gap-lg">
+      {/* Progress Bar */}
+      <div className="metric-progress-container">
+        <div className="flex justify-between items-center mb-sm">
+          <span
+            className="text-uppercase-sm"
+            style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}
           >
             {t('metrics.totalParts')}
-          </Text>
-          <Text
+          </span>
+          <span
+            className="text-primary"
+            style={{ fontSize: '14px', fontWeight: 600 }}
+          >
+            {completionPercentage}%
+          </span>
+        </div>
+        <div className="metric-progress-bar">
+          <div
+            className="metric-progress-fill"
             style={{
-              fontSize: '18px',
-              fontWeight: 600,
-              display: 'block',
+              width: `${completionPercentage}%`,
+              background: `linear-gradient(90deg, var(--color-success) 0%, var(--color-secondary) 100%)`,
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Metric Cards */}
+      <div
+        className="grid"
+        style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}
+      >
+        <div className="metric-card">
+          <div
+            className="metric-card-icon"
+            style={{
+              background: 'var(--color-primary-light)',
+              borderColor: 'var(--color-primary-border)',
             }}
           >
-            {totalNeeded}
-          </Text>
-        </Card>
-      </Col>
-      <Col xs={8} sm={8}>
-        <Card
-          size="small"
-          style={{
-            borderRadius: 12,
-            background:
-              'radial-gradient(circle at top, rgba(15,23,42,0.9), #020617)',
-            borderColor: 'rgba(34, 197, 94, 0.7)',
-            padding: '8px 10px',
-          }}
-          styles={{ body: { padding: '8px 10px' } }}
-        >
-          <Text
-            type="secondary"
+            <span style={{ fontSize: '20px' }}>📦</span>
+          </div>
+          <div className="metric-card-content">
+            <p
+              className="text-uppercase-sm"
+              style={{ fontSize: '10px', marginBottom: 6 }}
+            >
+              {t('metrics.totalParts')}
+            </p>
+            <span className="metric-card-value">{totalNeeded}</span>
+          </div>
+        </div>
+        <div className="metric-card metric-card-success">
+          <div
+            className="metric-card-icon"
             style={{
-              fontSize: '11px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.16em',
-              display: 'block',
-              marginBottom: 3,
+              background: 'var(--color-success-bg)',
+              borderColor: 'var(--color-success-border)',
             }}
           >
-            {t('metrics.have')}
-          </Text>
-          <Text
+            <span style={{ fontSize: '20px' }}>✓</span>
+          </div>
+          <div className="metric-card-content">
+            <p
+              className="text-uppercase-sm"
+              style={{ fontSize: '10px', marginBottom: 6 }}
+            >
+              {t('metrics.have')}
+            </p>
+            <span
+              className="metric-card-value"
+              style={{ color: 'var(--color-success)' }}
+            >
+              {totalHave}
+            </span>
+          </div>
+        </div>
+        <div className="metric-card metric-card-error">
+          <div
+            className="metric-card-icon"
             style={{
-              fontSize: '18px',
-              fontWeight: 600,
-              display: 'block',
+              background: 'var(--color-error-bg)',
+              borderColor: 'var(--color-error-border)',
             }}
           >
-            {totalHave}
-          </Text>
-        </Card>
-      </Col>
-      <Col xs={8} sm={8}>
-        <Card
-          size="small"
-          style={{
-            borderRadius: 12,
-            background:
-              'radial-gradient(circle at top, rgba(15,23,42,0.9), #020617)',
-            borderColor: 'rgba(248, 113, 113, 0.6)',
-            padding: '8px 10px',
-          }}
-          styles={{ body: { padding: '8px 10px' } }}
-        >
-          <Text
-            type="secondary"
-            style={{
-              fontSize: '11px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.16em',
-              display: 'block',
-              marginBottom: 3,
-            }}
-          >
-            {t('metrics.missing')}
-          </Text>
-          <Text
-            style={{
-              fontSize: '18px',
-              fontWeight: 600,
-              display: 'block',
-            }}
-          >
-            {totalMissing}
-          </Text>
-        </Card>
-      </Col>
-    </Row>
+            <span style={{ fontSize: '20px' }}>⚠</span>
+          </div>
+          <div className="metric-card-content">
+            <p
+              className="text-uppercase-sm"
+              style={{ fontSize: '10px', marginBottom: 6 }}
+            >
+              {t('metrics.missing')}
+            </p>
+            <span
+              className="metric-card-value"
+              style={{ color: 'var(--color-error)' }}
+            >
+              {totalMissing}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

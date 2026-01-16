@@ -1,8 +1,10 @@
 {
   "header": {
-    "title": "{{gameName}} Osat - Tarkistuslista",
+    "title": "{{gameName}} Tarkistuslista",
     "subtitle": "Moottori · Jousitus · Kori · Sisusta",
-    "description": "Vaihda jokaisen osan tilaa seurataksesi, onko sinulla se jo. Yhteenveto alla näyttää aina, mitkä osat sinulla on käytettävissä ja mitkä puuttuvat vielä."
+    "description": "Vaihda jokaisen osan tilaa seurataksesi, onko sinulla se jo. Yhteenveto alla näyttää aina, mitkä osat sinulla on käytettävissä ja mitkä puuttuvat vielä.",
+    "buildCar": "Rakenna Auto",
+    "partsInventory": "Osaluettelo"
   },
   "partsInventory": {
     "title": "Osaluettelo",
@@ -58,5 +60,8 @@
   },
   "languageSwitcher": {
     "ariaLabel": "Vaihda kieltä"
+  },
+  "buildCarPage": {
+    "title": "Rakenna Auto"
   }
 }

@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { Segmented } from 'antd';
 import { FilterType } from '../../types';
 
 interface FilterButtonsProps {
@@ -20,19 +19,17 @@ export function FilterButtons({
   ];
 
   return (
-    <Segmented
-      options={options}
-      value={activeFilter}
-      onChange={value => onFilterChange(value as FilterType)}
-      size="small"
-      style={{
-        fontSize: '12px',
-        textTransform: 'uppercase',
-        letterSpacing: '0.12em',
-        backgroundColor: '#020617',
-        borderColor: 'rgba(148,163,184,0.6)',
-      }}
-      aria-label={t('filters.ariaLabel')}
-    />
+    <div className="segmented" role="group" aria-label={t('filters.ariaLabel')}>
+      {options.map(option => (
+        <button
+          key={option.value}
+          className={`segmented-item ${activeFilter === option.value ? 'active' : ''}`}
+          onClick={() => onFilterChange(option.value as FilterType)}
+          type="button"
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
   );
 }
