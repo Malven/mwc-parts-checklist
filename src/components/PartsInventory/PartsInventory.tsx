@@ -53,7 +53,7 @@ export function PartsInventory({
           className="flex flex-col scrollbar-custom"
           style={{
             gap: 12,
-            maxHeight: '70vh',
+            maxHeight: '100vh',
             overflow: 'auto',
             paddingRight: 4,
           }}
